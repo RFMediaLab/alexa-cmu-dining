@@ -1,0 +1,27 @@
+{
+  "name": "alexa-cmu-dining",
+  "version": "1.0.0",
+  "description": "Alexa Skill for CMU Dining Locations",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RFMediaLab/alexa-cmu-dining.git"
+  },
+  "author": "Adam Moran and Meg Richards",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RFMediaLab/alexa-cmu-dining/issues"
+  },
+  "homepage": "https://github.com/RFMediaLab/alexa-cmu-dining",
+  "dependencies": {
+    "alexa-app": "^2.3.2",
+    "chai": "^3.5.0",
+    "chai-as-promised": "^5.3.0",
+    "lodash": "^4.11.1",
+    "mocha": "^2.4.5",
+    "request-promise": "^3.0.0"
+  }
+}
