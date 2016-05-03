@@ -1,7 +1,6 @@
 'use strict';
 var _ = require('lodash');
 var rp = require('request-promise');
-var moment = require('moment-timezone');
 var ENDPOINT = 'http://apis.scottylabs.org/dining/v1/locations';
 
 function CMUDiningDataHelper() { }
