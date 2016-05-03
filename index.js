@@ -16,7 +16,7 @@ app.intent('CheckLocationOpen',
  		'slots': {
     	'LOCATIONNAME': 'LOCATIONNAME'
   	},
-  	'utterances': ['{|is} {-|LOCATIONNAME} {|open}']
+  	'utterances': ['{|is|if} {-|LOCATIONNAME} {|is} {|open}']
 	},
   function(req, res) {
     //get the slot
@@ -59,7 +59,26 @@ app.intent('GetOpenLocations',
   }
 );
 
+app.intent('CheckTime', 
+  {
+    'slots': {},
+    'utterances': ['{|what} {time} {|it} {|is}']
+  },
+  function(req, res) {
+    //get the slot
+    var cur_date = new Date();
+    var mins = cur_date.getMinutes();
 
+    if (cur_date.getTimezoneOffset() === 0) {
+      cur_date.setMinutes(-240+mins);
+    }
+
+    var timeMessage = 'The time is ' + cur_date.toString();
+
+    res.say(timeMessage).send();
+    return false;
+  }
+);
 
 
 

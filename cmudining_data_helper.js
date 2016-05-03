@@ -49,7 +49,7 @@ CMUDiningDataHelper.prototype.requestLocationOpen = function(locationname) {
         var name = response.body.locations[i].name;
         var times = response.body.locations[i].times;
 
-        if (name === locationname) {
+        if (name.toLowerCase() === locationname.toLowerCase()) {
           if (_this.isLocationOpen(times)) {
             locationObj.isOpen = true;
           }
@@ -108,10 +108,11 @@ CMUDiningDataHelper.prototype.formatLocationOpen = function(locationname, isOpen
 
 CMUDiningDataHelper.prototype.isLocationOpen = function(times) {
   var cur_date = new Date();
+    var mins = cur_date.getMinutes();
 
-  if (cur_date.getTimezoneOffset() === 0) {
-    cur_date.setMinutes(-240);
-  }
+    if (cur_date.getTimezoneOffset() === 0) {
+      cur_date.setMinutes(-240+mins);
+    }
 
   for (var i = 0; i < times.length; i++) {
     var timerange = times[i];
