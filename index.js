@@ -28,7 +28,6 @@ app.intent('CheckLocationOpen',
     } else {
       var diningHelper = new CMUDiningDataHelper();
 			diningHelper.requestLocation(locationName).then(function(locationObj) {
-        console.log(locationObj);
         res.say(diningHelper.formatLocation(locationObj)).send();
       }).catch(function(err) {
         console.log(err.statusCode);

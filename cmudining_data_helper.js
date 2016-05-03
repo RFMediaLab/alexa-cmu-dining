@@ -9,24 +9,26 @@ CMUDiningDataHelper.prototype.requestOpenLocations = function() {
   var _this = this;
 	return this.getAllLocations().then(
     function(response) {
-      console.log('success - received location info');
+      console.log('-Received JSON response.');
 
       var resultNames = [];      
 
       for (var i = 0; i < response.body.locations.length; i++) {
-        console.log(name);
+        console.log('-Processing <' + name + '>.');
       	var name = response.body.locations[i].name;
       	var description = response.body.locations[i].description;
       	var keywords = response.body.locations[i].keywords;
       	var location = response.body.locations[i].location;
       	var times = response.body.locations[i].times;
 
-        if (_this.isLocationOpen(times)) {
-          resultNames.push(name);
+        if (name != undefined && name != null && name != 'undefined') {
+          if (_this.isLocationOpen(times)) {
+            resultNames.push(name);
+          }
         }
       }
-      console.log('DONE');
-      console.log(resultNames);
+      console.log('-Done checking openness.');
+      console.log('-Open Locations: ' + resultNames);
       return resultNames;
     }
   );
@@ -69,13 +71,15 @@ CMUDiningDataHelper.prototype.formatOpenLocations = function(openList) {
 		}
 	}
 
+  var cur_date = new Date();
 	// 'There are currently 3 locations open. Asiana, Carnegie Mellon Cafe, and El Gallo de Oro'
-	return 'There are currently ' + numOpen + ' locations open. ' + locationNames;
+	return 'The time is ' + cur_date.toString() + ' There are currently ' + numOpen + ' locations open. ' + locationNames;
 };
 
 CMUDiningDataHelper.prototype.formatLocation = function(openList) {
 
 };
+
 
 CMUDiningDataHelper.prototype.isLocationOpen = function(times) {
   var cur_date = new Date();
@@ -95,31 +99,64 @@ CMUDiningDataHelper.prototype.isLocationOpen = function(times) {
     var end_hour = timerange.end.hour;
     var end_min = timerange.end.min;
 
-    /* TODO: This algo currently does not account for minutes.
-     *       We made need the same 4-case structure for minutes...
-     */
-
     // Location is open between open/closing days
     if (start_day < cur_day && cur_day < end_day) {
+      console.log('  -> Middle day.');
       //easily true
       return true;
     }
     if (start_day < cur_day && cur_day === end_day) {
-      if (cur_hour <= end_hour) {
+      console.log('  -> End day.');
+      if (cur_hour < end_hour) {
+        console.log('     -> Less than hour.');
         return true;
+      }
+      if (cur_hour === end_hour) {
+        console.log('     -> Equal hour.');
+        return cur_min <= end_min;
+      }
+      else {
+        console.log('     -> Greater than hour.');
       }
     }
     if (start_day === cur_day && cur_day < end_day) {
-      if (start_hour <= cur_hour) {
+      console.log('  -> Start day.');
+      if (cur_hour > start_hour) {
+        console.log('     -> Greater than hour.');
         return true;
+
+      }
+      if (cur_hour === start_hour) {
+        console.log('     -> Equal hour.');
+        if (cur_min >= startmin) {
+          return true;
+        }
       }
     }
+    // 5:30 - 6:30, now: 5:15
     if (start_day === cur_day && cur_day === end_day) {
-      if (start_hour <= cur_hour && cur_hour <= end_hour) {
+      console.log('  -> Both days.');
+      if (start_hour < cur_hour && cur_hour < end_hour) {
         return true;
+      }
+      if (start_hour < cur_hour && cur_hour === end_hour) {
+        if (cur_min <= end_min) {
+          return true;
+        }
+      }
+      if (start_hour === cur_hour && cur_hour < end_hour) {
+        if (cur_min >= start_min) {
+          return true;
+        }
+      }
+      if (start_hour <= cur_hour && cur_hour <= end_hour) {
+        if (start_min <= cur_min && cur_min <= end_min) {
+          return true;
+        }
       }
     }
   }
+  console.log('  -> Vacuous case.');
   return false;
 };
 
