@@ -10,7 +10,6 @@ CMUDiningDataHelper.prototype.requestOpenLocations = function() {
 	return this.getAllLocations().then(
     function(response) {
       console.log('-Received JSON response.');
-      console.log('-Moment: ' + moment().tz("America/New_York").toDate().toString());
       var resultNames = [];      
 
       for (var i = 0; i < response.body.locations.length; i++) {
@@ -34,9 +33,32 @@ CMUDiningDataHelper.prototype.requestOpenLocations = function() {
   );
 };
 
-CMUDiningDataHelper.prototype.requestLocation = function(locationname) {
-  // Should return location obj.
-  return;
+CMUDiningDataHelper.prototype.requestLocationOpen = function(locationname) {
+  var _this = this;
+  return this.getAllLocations().then(
+    function(response) {
+      console.log('-Received JSON response.');
+
+      var locationObj = new Object();
+      locationObj.locationname = locationname;
+      locationObj.isOpen = false;
+
+      for (var i = 0; i < response.body.locations.length; i++) {
+        console.log('-Processing <' + name + '>.');
+
+        var name = response.body.locations[i].name;
+        var times = response.body.locations[i].times;
+
+        if (name === locationname) {
+          if (_this.isLocationOpen(times)) {
+            locationObj.isOpen = true;
+          }
+          return locationObj;
+        }
+      }
+      return locationObj;
+    }
+  );
 };
 
 
@@ -75,8 +97,12 @@ CMUDiningDataHelper.prototype.formatOpenLocations = function(openList) {
 	return 'There are currently ' + numOpen + ' locations open. ' + locationNames;
 };
 
-CMUDiningDataHelper.prototype.formatLocation = function(openList) {
-
+CMUDiningDataHelper.prototype.formatLocationOpen = function(locationname, isOpen) {
+  if (isOpen) {
+    return 'Yes, ' + locationname + ' is open right now.';
+  } else {
+    return 'No, you could order some Vocellis instead.';
+  }
 };
 
 

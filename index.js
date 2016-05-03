@@ -28,8 +28,8 @@ app.intent('CheckLocationOpen',
       return true;
     } else {
       var diningHelper = new CMUDiningDataHelper();
-			diningHelper.requestLocation(locationName).then(function(locationObj) {
-        res.say(diningHelper.formatLocation(locationObj)).send();
+			diningHelper.requestLocationOpen(locationName).then(function(locationObj) {
+        res.say(diningHelper.formatLocationOpen(locationObj.locationname,locationObj.isOpen)).send();
       }).catch(function(err) {
         console.log(err.statusCode);
         var prompt = 'I didn\'t have data for a location name of ' + locationName;
