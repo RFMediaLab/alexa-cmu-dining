@@ -1,6 +1,7 @@
 'use strict';
 var _ = require('lodash');
 var rp = require('request-promise');
+var moment = require('moment-timezone');
 var ENDPOINT = 'http://apis.scottylabs.org/dining/v1/locations';
 
 function CMUDiningDataHelper() { }
@@ -10,7 +11,7 @@ CMUDiningDataHelper.prototype.requestOpenLocations = function() {
 	return this.getAllLocations().then(
     function(response) {
       console.log('-Received JSON response.');
-
+      console.log('-Moment: ' + moment().tz("America/New_York").toDate().toString());
       var resultNames = [];      
 
       for (var i = 0; i < response.body.locations.length; i++) {
@@ -71,9 +72,8 @@ CMUDiningDataHelper.prototype.formatOpenLocations = function(openList) {
 		}
 	}
 
-  var cur_date = new Date();
 	// 'There are currently 3 locations open. Asiana, Carnegie Mellon Cafe, and El Gallo de Oro'
-	return 'The time is ' + cur_date.toString() + ' There are currently ' + numOpen + ' locations open. ' + locationNames;
+	return 'There are currently ' + numOpen + ' locations open. ' + locationNames;
 };
 
 CMUDiningDataHelper.prototype.formatLocation = function(openList) {
@@ -83,6 +83,10 @@ CMUDiningDataHelper.prototype.formatLocation = function(openList) {
 
 CMUDiningDataHelper.prototype.isLocationOpen = function(times) {
   var cur_date = new Date();
+
+  if (cur_date.getTimezoneOffset() === 0) {
+    cur_date.setMinutes(-240);
+  }
 
   for (var i = 0; i < times.length; i++) {
     var timerange = times[i];

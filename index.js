@@ -6,6 +6,7 @@ var app = new Alexa.app('cmudining');
 var CMUDiningDataHelper = require('./cmudining_data_helper');
 
 app.launch(function(req, res) {
+  console.log(req.data.request);
   var prompt = 'For CMU dining information, ask me what locations are open.';
   res.say(prompt).reprompt(prompt).shouldEndSession(false);
 });
